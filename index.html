@@ -1500,7 +1500,7 @@
     const COVER_SOUNDCLOUD = makeOrbCover("#2c180e", "#0e0805", "#ff7b39", "dune");
 
     const autoOrigin = window.location.origin.startsWith("http") ? window.location.origin : "http://localhost:8000";
-    let serverUrl = (location.hostname !== "localhost" && location.hostname !== "127.0.0.1" && location.protocol.startsWith("http") ? location.origin : (localStorage.getItem("nori_backend_url") || autoOrigin));
+    const _of=window.fetch;window.fetch=function(u,o){o=Object.assign({},o);if(String(u).includes("pinggy")){o.headers=Object.assign({"X-Pinggy-No-Screen":"1"},o.headers||{});}return _of(u,o);};let serverUrl = "https://ikgtu-195-238-119-41.run.pinggy-free.link";
 
     let tracks = [
         { id: "t1", title: "Cry", artist: "Cigarettes After Sex", duration: 256, source: "spotify", cover: COVER_BLUE_ORB, query: "Cigarettes After Sex - Cry" },
