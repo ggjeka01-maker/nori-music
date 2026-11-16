@@ -1493,7 +1493,7 @@
     const COVER_SOUNDCLOUD = makeOrbCover("#2c180e", "#0e0805", "#ff7b39", "dune");
 
     const autoOrigin = window.location.origin.startsWith("http") ? window.location.origin : "http://localhost:8000";
-    const _of=window.fetch;window.fetch=function(u,o){o=Object.assign({},o);if(String(u).includes("pinggy")){o.headers=Object.assign({"X-Pinggy-No-Screen":"1"},o.headers||{});}return _of(u,o);};let serverUrl = localStorage.getItem("nori_backend_url") || "https://3cde131ba1e261.app.lhr.life";
+    const _of=window.fetch;window.fetch=function(u,o){o=Object.assign({},o);if(String(u).includes("pinggy")){o.headers=Object.assign({"X-Pinggy-No-Screen":"1"},o.headers||{});}return _of(u,o);};const DEFAULT_SERVER_URL = "https://73790ade35e94a.app.lhr.life"; if (localStorage.getItem("nori_default_url") !== DEFAULT_SERVER_URL) { localStorage.setItem("nori_default_url", DEFAULT_SERVER_URL); localStorage.setItem("nori_backend_url", DEFAULT_SERVER_URL); } let serverUrl = localStorage.getItem("nori_backend_url") || DEFAULT_SERVER_URL;
 
     let tracks = [
         { id: "t1", title: "Cry", artist: "Cigarettes After Sex", duration: 256, source: "spotify", cover: COVER_BLUE_ORB, query: "Cigarettes After Sex - Cry" },
@@ -1750,21 +1750,7 @@
     window.closePlaylistModal = () => document.getElementById("playlist-modal").classList.remove("open");
 
     // Проверка соединения с Python-сервером
-    async function checkBackend() {
-        const dot = document.getElementById("server-dot");
-        const tag = document.getElementById("server-mode-tag");
-        try {
-            const res = await fetch(serverUrl + "/api/tg-search?q=test", { signal: AbortSignal.timeout(2500) });
-            if (res.ok || res.status === 400) {
-                dot.classList.add("online");
-                if (tag) tag.textContent = "LIVE API";
-                return true;
-            }
-        } catch (e) {}
-        dot.classList.remove("online");
-        if (tag) tag.textContent = "OFFLINE";
-        return false;
-    }
+    async function checkBackend() { const dot = document.getElementById("server-dot"); const tag = document.getElementById("server-mode-tag"); try { const ctrl = typeof AbortController !== "undefined" ? new AbortController() : null; const timer = ctrl ? setTimeout(() => ctrl.abort(), 8000) : null; const res = await fetch(serverUrl + "/", ctrl ? { signal: ctrl.signal } : {}); if (timer) clearTimeout(timer); if (res && res.status < 500) { if (dot) dot.classList.add("online"); if (tag) tag.textContent = "LIVE API"; return true; } } catch (e) {} if (dot) dot.classList.remove("online"); if (tag) tag.textContent = "OFFLINE"; return false; }
 
     function syncPasteBtn(){const i=document.getElementById("url-input"),b=document.getElementById("paste-clear-btn");if(i&&b)b.textContent=i.value.trim()?"Очистить":"Вставить";} async function handlePasteOrClear(){const i=document.getElementById("url-input");if(!i)return;if(i.value.trim()){i.value="";syncPasteBtn();i.focus();return;}const applyText=(t)=>{if(t&&t.trim()){i.value=t.trim();syncPasteBtn();showToast("Ссылка вставлена");}else{showToast("Буфер обмена пуст");}};const wa=window.Telegram&&window.Telegram.WebApp;if(wa&&typeof wa.readTextFromClipboard==="function"){try{wa.readTextFromClipboard((t)=>{if(t!==null&&t!==undefined)applyText(t);else{i.focus();showToast("Вставьте ссылку вручную");}});return;}catch(e){}}try{const t=await navigator.clipboard.readText();applyText(t);}catch(e){i.focus();showToast("Вставьте ссылку вручную");}} window.openServerModal = function() {
         document.getElementById("server-url-input").value = serverUrl;
@@ -1772,15 +1758,7 @@
     };
     window.closeServerModal = () => document.getElementById("server-modal").classList.remove("open");
 
-    window.applyServerUrl = async function() {
-        const val = document.getElementById("server-url-input").value.trim().replace(/\/$/, "");
-        if (!val) return;
-        serverUrl = val;
-        serverUrl = serverUrl.replace(/\/+$/, ""); localStorage.setItem("nori_backend_url", serverUrl);
-        closeServerModal();
-        const ok = await document.getElementById("fp-aura").classList.toggle("off", !auraEnabled); document.getElementById("aura-btn").textContent = auraEnabled ? "Аура: Вкл" : "Аура: Выкл"; document.getElementById("bg-mode-btn").textContent = bgIndex === 0 ? "Фон: Адаптив" : (bgIndex === 1 ? "Фон: Стекло" : "Фон: OLED"); applyPlayerVisuals(); shuffleMode = localStorage.getItem("nori_shuffle") === "1"; syncShuffleUI(); checkBackend();
-        showToast(ok ? "Сервер NORI подключён" : "Нет связи с сервером");
-    };
+    window.applyServerUrl = async function() { const val = document.getElementById("server-url-input").value.trim().replace(/\/+$/, ""); if (!val) return; serverUrl = val; localStorage.setItem("nori_backend_url", serverUrl); closeServerModal(); const ok = await checkBackend(); showToast(ok ? "Сервер NORI подключён" : "Нет связи с сервером"); };
 
     // Синхронизация иконок Play/Pause на всех экранах
     function syncPlayStateUI() {
@@ -2115,7 +2093,7 @@ window.toggleLikeById = function(id, listType, idx) {
     initVibeDotsCanvas();
     initWaveform();
     renderUI();
-    checkBackend();
+    checkBackend(); setInterval(checkBackend, 10000); document.addEventListener("visibilitychange", () => { if (!document.hidden) checkBackend(); });
 
 if ("mediaSession" in navigator && typeof audio !== "undefined") { audio.addEventListener("play", function() { const t = tracks[currentIndex]; if (!t) return; try { navigator.mediaSession.metadata = new MediaMetadata({ title: t.title || "NORI", artist: t.artist || "NORI", artwork: t.cover ? [{ src: t.cover, sizes: "512x512", type: "image/png" }] : [] }); navigator.mediaSession.setActionHandler("play", function() { togglePlayPause(); }); navigator.mediaSession.setActionHandler("pause", function() { togglePlayPause(); }); navigator.mediaSession.setActionHandler("previoustrack", function() { if (typeof prevTrack === "function") prevTrack(); }); navigator.mediaSession.setActionHandler("nexttrack", function() { if (typeof nextTrack === "function") nextTrack(); }); } catch(e) {} }); }
 </script>
