@@ -1493,7 +1493,7 @@
     const COVER_SOUNDCLOUD = makeOrbCover("#2c180e", "#0e0805", "#ff7b39", "dune");
 
     const autoOrigin = window.location.origin.startsWith("http") ? window.location.origin : "http://localhost:8000";
-    const _of=window.fetch;window.fetch=function(u,o){o=Object.assign({},o);if(String(u).includes("pinggy")){o.headers=Object.assign({"X-Pinggy-No-Screen":"1"},o.headers||{});}return _of(u,o);};const DEFAULT_SERVER_URL = "https://ekima-195-238-119-41.run.pinggy-free.link"; if (localStorage.getItem("nori_default_url") !== DEFAULT_SERVER_URL) { localStorage.setItem("nori_default_url", DEFAULT_SERVER_URL); localStorage.setItem("nori_backend_url", DEFAULT_SERVER_URL); } let serverUrl = localStorage.getItem("nori_backend_url") || DEFAULT_SERVER_URL;
+    const _of=window.fetch;window.fetch=function(u,o){o=Object.assign({},o);if(String(u).includes("pinggy")){o.headers=Object.assign({"X-Pinggy-No-Screen":"1"},o.headers||{});}return _of(u,o);};const DEFAULT_SERVER_URL = "https://a409b2802f37fa35-195-238-119-41.serveousercontent.com"; if (localStorage.getItem("nori_default_url") !== DEFAULT_SERVER_URL) { localStorage.setItem("nori_default_url", DEFAULT_SERVER_URL); localStorage.setItem("nori_backend_url", DEFAULT_SERVER_URL); } let serverUrl = localStorage.getItem("nori_backend_url") || DEFAULT_SERVER_URL;
 
     let tracks = [
         { id: "t1", title: "Cry", artist: "Cigarettes After Sex", duration: 256, source: "spotify", cover: COVER_BLUE_ORB, query: "Cigarettes After Sex - Cry" },
