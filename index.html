@@ -1493,7 +1493,7 @@
     const COVER_SOUNDCLOUD = makeOrbCover("#2c180e", "#0e0805", "#ff7b39", "dune");
 
     const autoOrigin = window.location.origin.startsWith("http") ? window.location.origin : "http://localhost:8000";
-    const _of=window.fetch;window.fetch=function(u,o){o=Object.assign({},o);if(String(u).includes("pinggy")){o.headers=Object.assign({"X-Pinggy-No-Screen":"1"},o.headers||{});}return _of(u,o);};const DEFAULT_SERVER_URL = "https://73790ade35e94a.app.lhr.life"; if (localStorage.getItem("nori_default_url") !== DEFAULT_SERVER_URL) { localStorage.setItem("nori_default_url", DEFAULT_SERVER_URL); localStorage.setItem("nori_backend_url", DEFAULT_SERVER_URL); } let serverUrl = localStorage.getItem("nori_backend_url") || DEFAULT_SERVER_URL;
+    const _of=window.fetch;window.fetch=function(u,o){o=Object.assign({},o);if(String(u).includes("pinggy")){o.headers=Object.assign({"X-Pinggy-No-Screen":"1"},o.headers||{});}return _of(u,o);};const DEFAULT_SERVER_URL = "https://6e1608b954bb86ab-195-238-119-41.serveousercontent.com"; if (localStorage.getItem("nori_default_url") !== DEFAULT_SERVER_URL) { localStorage.setItem("nori_default_url", DEFAULT_SERVER_URL); localStorage.setItem("nori_backend_url", DEFAULT_SERVER_URL); } let serverUrl = localStorage.getItem("nori_backend_url") || DEFAULT_SERVER_URL;
 
     let tracks = [
         { id: "t1", title: "Cry", artist: "Cigarettes After Sex", duration: 256, source: "spotify", cover: COVER_BLUE_ORB, query: "Cigarettes After Sex - Cry" },
@@ -1866,6 +1866,7 @@ window.addTrackToPlaylist = function(listType, idx) {
   if (box) box.innerHTML = playlists.map((p, i) => '<button type=button onclick=pickExistingPl(' + i + ') style=display:flex;justify-content:space-between;align-items:center;width:100%;padding:12px 14px;border-radius:14px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);color:#fff;font-size:14px;font-weight:600;cursor:pointer><span>' + p.title + '</span><span style=font-size:12px;opacity:.6>' + p.tracks.length + ' тр.</span></button>').join('');
   document.getElementById('add-pl-modal').classList.add('open');
 };
+window.toggleFavoriteTrackObj = function(t) { if (!t) return; const idx = favorites.findIndex(f => f.id === t.id || (f.title === t.title && f.artist === t.artist)); const added = idx === -1; if (added) { favorites.unshift(Object.assign({}, t)); } else { favorites.splice(idx, 1); } try { localStorage.setItem("nori_favorites", JSON.stringify(favorites)); } catch(e) {} if (typeof saveFavoritesMeta === "function") saveFavoritesMeta(); if (typeof renderUI === "function") renderUI(); if (typeof renderLibrary === "function") renderLibrary(); showToast(added ? "Добавлено в любимые" : "Удалено из любимых"); }; window.toggleFavoriteCurrent = function() { if (Array.isArray(tracks) && tracks[currentIndex]) toggleFavoriteTrackObj(tracks[currentIndex]); };
 window.toggleLikeById = function(id, listType, idx) {
         const src = listType === "fav" ? favorites : (listType === "offline" ? offlineTracks : (listType === "tg" ? tgSearchResults : tracks));
         toggleFavoriteTrackObj(src[idx]);
