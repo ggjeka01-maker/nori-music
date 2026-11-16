@@ -1212,12 +1212,12 @@
                 <div class="vibe-overlay">
                     <div class="vibe-top-bar">
                         <span class="vibe-ai-badge">NORI VIBE &bull; TG AI</span>
-                        <span class="vibe-taste-text" id="vibe-taste">Вкус: Cigarettes After Sex</span>
+                        <span class="vibe-taste-text" id="vibe-taste">Вкус: твой микс</span>
                     </div>
                     <div class="vibe-bottom-bar">
                         <div class="vibe-texts">
                             <div class="vibe-h2">Мой вайб</div>
-                            <div class="vibe-desc" id="vibe-desc">Подборка под Cigarettes After Sex, Molchat Doma...</div>
+                            <div class="vibe-desc" id="vibe-desc">Персональный поток по твоим трекам</div>
                         </div>
                         <button class="vibe-circle-play" id="vibe-btn" aria-label="Мой вайб">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="7 4 20 12 7 20 7 4"/></svg>
@@ -1358,9 +1358,9 @@
             <div class="mini-texts">
                 <div class="mini-title-row">
                     <span class="mini-live-dot"></span>
-                    <div class="mini-title" id="mini-title">Cry</div>
+                    <div class="mini-title" id="mini-title">Ничего не играет</div>
                 </div>
-                <div class="mini-artist" id="mini-artist">Cigarettes After Sex</div>
+                <div class="mini-artist" id="mini-artist">Выбери или найди трек</div>
             </div>
         </div>
         <div class="mini-right-actions">
@@ -1410,8 +1410,8 @@
 
         <div class="fp-meta">
             <div>
-                <div class="fp-title" id="fp-title">Cry</div>
-                <div class="fp-artist" id="fp-artist">Cigarettes After Sex</div>
+                <div class="fp-title" id="fp-title">Ничего не играет</div>
+                <div class="fp-artist" id="fp-artist">Выбери или найди трек</div>
             </div>
             <button class="heart-glow-btn" id="fp-like-btn" onclick="toggleFavoriteCurrent()" style="width:44px;height:44px;">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
@@ -1493,7 +1493,7 @@
     const COVER_SOUNDCLOUD = makeOrbCover("#2c180e", "#0e0805", "#ff7b39", "dune");
 
     const autoOrigin = window.location.origin.startsWith("http") ? window.location.origin : "http://localhost:8000";
-    const _of=window.fetch;window.fetch=function(u,o){o=Object.assign({},o);if(String(u).includes("pinggy")){o.headers=Object.assign({"X-Pinggy-No-Screen":"1"},o.headers||{});}return _of(u,o);};const DEFAULT_SERVER_URL = "https://a409b2802f37fa35-195-238-119-41.serveousercontent.com"; if (localStorage.getItem("nori_default_url") !== DEFAULT_SERVER_URL) { localStorage.setItem("nori_default_url", DEFAULT_SERVER_URL); localStorage.setItem("nori_backend_url", DEFAULT_SERVER_URL); } let serverUrl = localStorage.getItem("nori_backend_url") || DEFAULT_SERVER_URL;
+    const _of=window.fetch;window.fetch=function(u,o){o=Object.assign({},o);if(String(u).includes("pinggy")){o.headers=Object.assign({"X-Pinggy-No-Screen":"1"},o.headers||{});}return _of(u,o);};const DEFAULT_SERVER_URL = "НОВАЯ_ССЫЛКА_SERVEO"; if (localStorage.getItem("nori_default_url") !== DEFAULT_SERVER_URL) { localStorage.setItem("nori_default_url", DEFAULT_SERVER_URL); localStorage.setItem("nori_backend_url", DEFAULT_SERVER_URL); } let serverUrl = localStorage.getItem("nori_backend_url") || DEFAULT_SERVER_URL;
 
     let tracks = [];
 
@@ -1780,7 +1780,7 @@
         const nextIdx = tracks.length > 1
             ? (currentIndex + 1 + Math.floor(Math.random() * (tracks.length - 1))) % tracks.length
             : 0;
-        playTrack(nextIdx);
+        if (tracks.length) { playTrack(nextIdx); } else { vibePlaying = false; showToast("Сначала найди или добавь треки"); }
         showToast("Поток «Мой вайб» запущен");
     };
 
