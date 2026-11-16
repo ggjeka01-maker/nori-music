@@ -2042,10 +2042,11 @@ window.toggleLikeById = function(id, listType, idx) {
     audio.addEventListener("ended", nextTrack);
 
     // Инициализация
-    document.getElementById("mini-cover").src = tracks[0].cover;
-    document.getElementById("fp-cover").src = tracks[0].cover;
+    document.getElementById("mini-cover").src = (tracks[0] && tracks[0].cover) || COVER_BLUE_ORB;
+    document.getElementById("fp-cover").src = (tracks[0] && tracks[0].cover) || COVER_BLUE_ORB;
     initVibeDotsCanvas();
     initWaveform();
+    if (!tracks.length) { const seen=new Set(); [...favorites, ...offlineTracks].forEach(t=>{ if(t && t.id && !seen.has(t.id)){ seen.add(t.id); tracks.push(t); } }); }
     renderUI();
     checkBackend(); setInterval(checkBackend, 10000); document.addEventListener("visibilitychange", () => { if (!document.hidden) checkBackend(); });
 
