@@ -1766,7 +1766,7 @@
         return false;
     }
 
-    function syncPasteBtn(){const i=document.getElementById("url-input"),b=document.getElementById("paste-clear-btn");if(i&&b)b.textContent=i.value.trim()?"Очистить":"Вставить";} async function handlePasteOrClear(){const i=document.getElementById("url-input");if(!i)return;if(i.value.trim()){i.value="";syncPasteBtn();i.focus();return;}try{const t=await navigator.clipboard.readText();if(t&&t.trim()){i.value=t.trim();syncPasteBtn();showToast("Ссылка вставлена");}else{showToast("Буфер обмена пуст");}}catch(e){i.focus();showToast("Вставьте ссылку вручную");}} window.openServerModal = function() {
+    function syncPasteBtn(){const i=document.getElementById("url-input"),b=document.getElementById("paste-clear-btn");if(i&&b)b.textContent=i.value.trim()?"Очистить":"Вставить";} async function handlePasteOrClear(){const i=document.getElementById("url-input");if(!i)return;if(i.value.trim()){i.value="";syncPasteBtn();i.focus();return;}const applyText=(t)=>{if(t&&t.trim()){i.value=t.trim();syncPasteBtn();showToast("Ссылка вставлена");}else{showToast("Буфер обмена пуст");}};const wa=window.Telegram&&window.Telegram.WebApp;if(wa&&typeof wa.readTextFromClipboard==="function"){try{wa.readTextFromClipboard((t)=>{if(t!==null&&t!==undefined)applyText(t);else{i.focus();showToast("Вставьте ссылку вручную");}});return;}catch(e){}}try{const t=await navigator.clipboard.readText();applyText(t);}catch(e){i.focus();showToast("Вставьте ссылку вручную");}} window.openServerModal = function() {
         document.getElementById("server-url-input").value = serverUrl;
         document.getElementById("server-modal").classList.add("open");
     };
@@ -1776,7 +1776,7 @@
         const val = document.getElementById("server-url-input").value.trim().replace(/\/$/, "");
         if (!val) return;
         serverUrl = val;
-        localStorage.setItem("nori_backend_url", serverUrl);
+        serverUrl = serverUrl.replace(/\/+$/, ""); localStorage.setItem("nori_backend_url", serverUrl);
         closeServerModal();
         const ok = await document.getElementById("fp-aura").classList.toggle("off", !auraEnabled); document.getElementById("aura-btn").textContent = auraEnabled ? "Аура: Вкл" : "Аура: Выкл"; document.getElementById("bg-mode-btn").textContent = bgIndex === 0 ? "Фон: Адаптив" : (bgIndex === 1 ? "Фон: Стекло" : "Фон: OLED"); applyPlayerVisuals(); shuffleMode = localStorage.getItem("nori_shuffle") === "1"; syncShuffleUI(); checkBackend();
         showToast(ok ? "Сервер NORI подключён" : "Нет связи с сервером");
