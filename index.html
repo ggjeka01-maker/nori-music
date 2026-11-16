@@ -1495,58 +1495,11 @@
     const autoOrigin = window.location.origin.startsWith("http") ? window.location.origin : "http://localhost:8000";
     const _of=window.fetch;window.fetch=function(u,o){o=Object.assign({},o);if(String(u).includes("pinggy")){o.headers=Object.assign({"X-Pinggy-No-Screen":"1"},o.headers||{});}return _of(u,o);};const DEFAULT_SERVER_URL = "https://a409b2802f37fa35-195-238-119-41.serveousercontent.com"; if (localStorage.getItem("nori_default_url") !== DEFAULT_SERVER_URL) { localStorage.setItem("nori_default_url", DEFAULT_SERVER_URL); localStorage.setItem("nori_backend_url", DEFAULT_SERVER_URL); } let serverUrl = localStorage.getItem("nori_backend_url") || DEFAULT_SERVER_URL;
 
-    let tracks = [
-        { id: "t1", title: "Cry", artist: "Cigarettes After Sex", duration: 256, source: "spotify", cover: COVER_BLUE_ORB, query: "Cigarettes After Sex - Cry" },
-        { id: "t2", title: "Судно", artist: "Молчат Дома", duration: 141, source: "soundcloud", cover: COVER_SOUNDCLOUD, query: "Молчат Дома - Судно" },
-        { id: "t3", title: "See You Again", artist: "Tyler, The Creator", duration: 180, source: "spotify", cover: COVER_SPOTIFY, query: "Tyler The Creator - See You Again" },
-        { id: "t4", title: "Notion", artist: "The Rare Occasions", duration: 195, source: "ytmusic", cover: COVER_YTMUSIC, query: "The Rare Occasions - Notion" }
-    ];
-
-    let playlists = [
-        {
-            id: "pl_sp",
-            title: "Midnight Noir Essentials",
-            platform: "spotify",
-            tag: "SPOTIFY",
-            cover: COVER_SPOTIFY,
-            tracks: [
-                tracks[0],
-                tracks[2],
-                { id: "t5", title: "Apocalypse", artist: "Cigarettes After Sex", duration: 290, source: "spotify", cover: COVER_SPOTIFY, query: "Cigarettes After Sex - Apocalypse" },
-                { id: "t6", title: "505", artist: "Arctic Monkeys", duration: 253, source: "spotify", cover: COVER_BLUE_ORB, query: "Arctic Monkeys - 505" }
-            ]
-        },
-        {
-            id: "pl_yt",
-            title: "YouTube Music Afterhours",
-            platform: "ytmusic",
-            tag: "YT MUSIC",
-            cover: COVER_YTMUSIC,
-            tracks: [
-                tracks[3],
-                { id: "t7", title: "Sweater Weather", artist: "The Neighbourhood", duration: 240, source: "ytmusic", cover: COVER_YTMUSIC, query: "The Neighbourhood - Sweater Weather" },
-                { id: "t8", title: "After Dark", artist: "Mr.Kitty", duration: 259, source: "ytmusic", cover: COVER_BLUE_ORB, query: "Mr.Kitty - After Dark" },
-                { id: "t9", title: "Memory Reboot", artist: "VØJ, Narvent", duration: 208, source: "ytmusic", cover: COVER_YTMUSIC, query: "VOJ Narvent - Memory Reboot" }
-            ]
-        },
-        {
-            id: "pl_sc",
-            title: "SoundCloud Deep Sets",
-            platform: "soundcloud",
-            tag: "SC",
-            cover: COVER_SOUNDCLOUD,
-            tracks: [
-                tracks[1],
-                { id: "t10", title: "Клетка", artist: "Молчат Дома", duration: 283, source: "soundcloud", cover: COVER_SOUNDCLOUD, query: "Молчат Дома - Клетка" },
-                { id: "t11", title: "Rave", artist: "Dxrk ダーク", duration: 169, source: "soundcloud", cover: COVER_SOUNDCLOUD, query: "Dxrk - Rave" },
-                { id: "t12", title: "Metamorphosis", artist: "INTERWORLD", duration: 142, source: "soundcloud", cover: COVER_BLUE_ORB, query: "INTERWORLD - Metamorphosis" }
-            ]
-        }
-    ];
+    let tracks = [];
 
     let favorites = JSON.parse(localStorage.getItem("nori_favs_v2") || "[]");
     if (!favorites.length) {
-        favorites = [tracks[0]];
+        favorites = tracks.length ? [tracks[0]] : [];
         localStorage.setItem("nori_favs_v2", JSON.stringify(favorites));
     }
     let offlineTracks = JSON.parse(localStorage.getItem("nori_offline_v2") || "[]");
