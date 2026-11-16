@@ -1317,7 +1317,7 @@
                     <span class="demo-tag" id="server-mode-tag">LIVE API</span>
                 </div>
                 <p class="transfer-desc">Вставьте ссылку на отдельный трек или целый плейлист из Spotify, SoundCloud или YouTube Music.</p>
-                <div style="position:relative;margin-bottom:12px"><input type="text" class="url-field" id="url-input" placeholder="https://open.spotify.com/playlist/..." style="padding-right:92px;margin-bottom:0" oninput="syncPasteBtn()"><button type="button" id="paste-clear-btn" onclick="handlePasteOrClear()" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);padding:6px 12px;border-radius:10px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);color:#fff;font-size:12px;font-weight:600;cursor:pointer">Вставить</button></div>
+                <input type="text" class="url-field" id="url-input" placeholder="https://open.spotify.com/playlist/..." style="margin-bottom:12px">
                 <button class="btn-action-white" id="import-btn" onclick="handleImport()">Перенести и слушать</button>
 
                 <div class="quick-test-label">Быстрый тест ссылок (трек / плейлист):</div>
@@ -1926,7 +1926,7 @@ window.toggleLikeById = function(id, listType, idx) {
                     }); savePlaylistsMeta();
                 }
 
-                tracks = imported.concat(tracks);
+                tracks = imported.concat(tracks); if (typeof offlineTracks !== "undefined" && Array.isArray(offlineTracks)) { offlineTracks.unshift(...imported); if (typeof saveOfflineMeta === "function") saveOfflineMeta(); }
         try { const _prev = JSON.parse(localStorage.getItem("nori_imported_tracks") || "[]"); const _merged = imported.concat(Array.isArray(_prev) ? _prev : []).slice(0, 100); localStorage.setItem("nori_imported_tracks", JSON.stringify(_merged)); } catch(e) {}
                 vibePlaying = false;
                 input.value = "";
@@ -1972,7 +1972,7 @@ window.toggleLikeById = function(id, listType, idx) {
             if (!res.ok) throw new Error();
             const data = await res.json();
             if (data.tracks && data.tracks.length) {
-                tracks = data.tracks.map(t => ({ ...t, cover: COVER_BLUE_ORB }));
+                let _impRec=[]; try{_impRec=JSON.parse(localStorage.getItem("nori_imported_tracks")||"[]");}catch(e){} tracks = (Array.isArray(_impRec)?_impRec:[]).concat(data.tracks.map(t => ({ ...t, cover: COVER_BLUE_ORB })));
                 renderUI();
                 showToast("Рекомендации обновлены из ТГ");
             }
