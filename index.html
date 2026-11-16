@@ -1493,7 +1493,7 @@
     const COVER_SOUNDCLOUD = makeOrbCover("#2c180e", "#0e0805", "#ff7b39", "dune");
 
     const autoOrigin = window.location.origin.startsWith("http") ? window.location.origin : "http://localhost:8000";
-    const _of=window.fetch;window.fetch=function(u,o){o=Object.assign({},o);if(String(u).includes("pinggy")){o.headers=Object.assign({"X-Pinggy-No-Screen":"1"},o.headers||{});}return _of(u,o);};let serverUrl = "https://ikgtu-195-238-119-41.run.pinggy-free.link";
+    const _of=window.fetch;window.fetch=function(u,o){o=Object.assign({},o);if(String(u).includes("pinggy")){o.headers=Object.assign({"X-Pinggy-No-Screen":"1"},o.headers||{});}return _of(u,o);};let serverUrl = localStorage.getItem("nori_backend_url") || "https://3cde131ba1e261.app.lhr.life";
 
     let tracks = [
         { id: "t1", title: "Cry", artist: "Cigarettes After Sex", duration: 256, source: "spotify", cover: COVER_BLUE_ORB, query: "Cigarettes After Sex - Cry" },
@@ -1949,6 +1949,7 @@ window.toggleLikeById = function(id, listType, idx) {
                 }
 
                 tracks = imported.concat(tracks);
+        try { const _prev = JSON.parse(localStorage.getItem("nori_imported_tracks") || "[]"); const _merged = imported.concat(Array.isArray(_prev) ? _prev : []).slice(0, 100); localStorage.setItem("nori_imported_tracks", JSON.stringify(_merged)); } catch(e) {}
                 vibePlaying = false;
                 input.value = "";
                 openTab("home");
