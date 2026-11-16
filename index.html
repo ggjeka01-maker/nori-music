@@ -1493,7 +1493,7 @@
     const COVER_SOUNDCLOUD = makeOrbCover("#2c180e", "#0e0805", "#ff7b39", "dune");
 
     const autoOrigin = window.location.origin.startsWith("http") ? window.location.origin : "http://localhost:8000";
-    const _of=window.fetch;window.fetch=function(u,o){o=Object.assign({},o);if(String(u).includes("pinggy")){o.headers=Object.assign({"X-Pinggy-No-Screen":"1"},o.headers||{});}return _of(u,o);};const DEFAULT_SERVER_URL = "https://eab67ba259c6ceb8-195-238-119-41.serveousercontent.com"; if (localStorage.getItem("nori_default_url") !== DEFAULT_SERVER_URL) { localStorage.setItem("nori_default_url", DEFAULT_SERVER_URL); localStorage.setItem("nori_backend_url", DEFAULT_SERVER_URL); } let serverUrl = localStorage.getItem("nori_backend_url") || DEFAULT_SERVER_URL;
+    const _of=window.fetch;window.fetch=function(u,o){o=Object.assign({},o);if(String(u).includes("pinggy")){o.headers=Object.assign({"X-Pinggy-No-Screen":"1"},o.headers||{});}return _of(u,o);};const DEFAULT_SERVER_URL = "https://c98efdce8219d02d-195-238-119-41.serveousercontent.com"; if (localStorage.getItem("nori_default_url") !== DEFAULT_SERVER_URL) { localStorage.setItem("nori_default_url", DEFAULT_SERVER_URL); localStorage.setItem("nori_backend_url", DEFAULT_SERVER_URL); } let serverUrl = localStorage.getItem("nori_backend_url") || DEFAULT_SERVER_URL;
 
     let tracks = [];
 
@@ -1600,28 +1600,26 @@
     }
 
     function renderPlaylists() {
-        const html = playlists.map((pl, idx) => {
-            const cls = pl.platform === "spotify" ? "sp" : (pl.platform === "ytmusic" ? "yt" : "sc");
-            const icon = ICONS_PLATFORM[pl.platform] || ICONS_PLATFORM.spotify;
-            return `
-                <div class="pl-card" onclick="openPlaylistModal(${idx})">
-                    <div class="pl-art-box">
-                        <img class="pl-art-img" src="${pl.cover}" alt="">
-                        <div class="pl-corner-icon ${cls}">${icon}</div>
-                        <span class="pl-source-tag">${pl.tag}</span>
-                    </div>
-                    <div class="pl-title">${pl.title}</div>
-                    <div class="pl-count">${pluralTracks(pl.tracks.length)}</div>
-                </div>
-            `;
-        }).join("");
-
-        document.getElementById("playlists-row").innerHTML = html;
-        document.getElementById("lib-playlists-row").innerHTML = html;
-    }
+  try {
+    const iconsMap = typeof ICONS_PLATFORM !== "undefined" ? ICONS_PLATFORM : {};
+    const list = Array.isArray(playlists) ? playlists : [];
+    const html = list.length ? list.map((pl, idx) => {
+      if (!pl) return "";
+      const trks = Array.isArray(pl.tracks) ? pl.tracks : [];
+      const cls = pl.platform === "spotify" ? "sp" : (pl.platform === "ytmusic" ? "yt" : "sc");
+      const icon = iconsMap[pl.platform] || iconsMap.spotify || "♫";
+      const cov = pl.cover || (trks[0] && trks[0].cover) || COVER_BLUE_ORB;
+      const tag = pl.tag || (pl.platform || "MIX").toUpperCase();
+      return `<div class="pl-card" onclick="openPlaylistModal(${idx})"><div class="pl-art-box"><img class="pl-art-img" src="${cov}" alt=""><div class="pl-corner-icon ${cls}">${icon}</div><span class="pl-source-tag">${tag}</span></div><div class="pl-title">${pl.title || "Плейлист"}</div><div class="pl-count">${pluralTracks(trks.length)}</div></div>`;
+    }).join("") : `<div style="color:var(--muted);font-size:13px;padding:8px 2px;">Плейлистов пока нет</div>`;
+    const r1 = document.getElementById("playlists-row"); if (r1) r1.innerHTML = html;
+    const r2 = document.getElementById("lib-playlists-row"); if (r2) r2.innerHTML = html;
+  } catch (e) { console.error(e); }
+}
 
     function renderTrackArray(containerId, list, listType) {
         const box = document.getElementById(containerId);
+  if (!box) return;
         if (!list.length) {
             box.innerHTML = '<div style="color:var(--muted);font-size:13px;padding:10px 2px;">Пока пусто</div>';
             return;
@@ -1676,6 +1674,7 @@
     window.openPlaylistModal = function(plIndex) {
         const pl = playlists[plIndex];
         if (!pl) return;
+  if (!Array.isArray(pl.tracks)) pl.tracks = [];
         document.getElementById("pl-modal-title").textContent = pl.title;
         document.getElementById("pl-modal-sub").textContent = pluralTracks(pl.tracks.length);
         document.getElementById("pl-play-all-btn").onclick = () => {
@@ -2048,7 +2047,7 @@ window.toggleLikeById = function(id, listType, idx) {
     initWaveform();
     if (!tracks.length) { const seen=new Set(); [...favorites, ...offlineTracks].forEach(t=>{ if(t && t.id && !seen.has(t.id)){ seen.add(t.id); tracks.push(t); } }); }
     renderUI();
-    checkBackend(); setInterval(checkBackend, 10000); document.addEventListener("visibilitychange", () => { if (!document.hidden) checkBackend(); });
+    checkBackend(); setTimeout(checkBackend, 1500); setTimeout(checkBackend, 4000); setInterval(checkBackend, 10000); document.addEventListener("visibilitychange", () => { if (!document.hidden) checkBackend(); });
 
 if ("mediaSession" in navigator && typeof audio !== "undefined") { audio.addEventListener("play", function() { const t = tracks[currentIndex]; if (!t) return; try { navigator.mediaSession.metadata = new MediaMetadata({ title: t.title || "NORI", artist: t.artist || "NORI", artwork: t.cover ? [{ src: t.cover, sizes: "512x512", type: "image/png" }] : [] }); navigator.mediaSession.setActionHandler("play", function() { togglePlayPause(); }); navigator.mediaSession.setActionHandler("pause", function() { togglePlayPause(); }); navigator.mediaSession.setActionHandler("previoustrack", function() { if (typeof prevTrack === "function") prevTrack(); }); navigator.mediaSession.setActionHandler("nexttrack", function() { if (typeof nextTrack === "function") nextTrack(); }); } catch(e) {} }); }
 </script>
